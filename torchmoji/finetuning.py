@@ -235,7 +235,6 @@ def finetune(model, texts, labels, nb_classes, batch_size, method,
                               extended_batch_sampler=False)
     test_gen = get_data_loader(texts[2], labels[2], batch_size,
                               extended_batch_sampler=False)
-
     checkpoint_path = '{}/torchmoji-checkpoint-{}.bin' \
                       .format(WEIGHTS_DIR, str(uuid.uuid4()))
 
@@ -521,7 +520,7 @@ def fit_model(model, loss_op, optim_op, train_gen, val_gen, epochs,
     torch.save(model.state_dict(), checkpoint_path)
 
     model.eval()
-    best_loss = np.mean([calc_loss(loss_op, model(Variable(xv)), Variable(yv)).data.cpu().numpy()[0] for xv, yv in val_gen])
+    best_loss = np.mean([calc_loss(loss_op, model(Variable(xv)), Variable(yv)).data.cpu().numpy() for xv, yv in val_gen])
     print("original val loss", best_loss)
 
     epoch_without_impr = 0
@@ -539,13 +538,13 @@ def fit_model(model, loss_op, optim_op, train_gen, val_gen, epochs,
             optim_op.step()
 
             acc = evaluate_using_acc(model, [(X_train.data, y_train.data)])
-            print("== Epoch", epoch, "step", i, "train loss", loss.data.cpu().numpy()[0], "train acc", acc)
+            print("== Epoch", epoch, "step", i, "train loss", loss.data.cpu().numpy(), "train acc", acc)
 
         model.eval()
         acc = evaluate_using_acc(model, val_gen)
         print("val acc", acc)
 
-        val_loss = np.mean([calc_loss(loss_op, model(Variable(xv)), Variable(yv)).data.cpu().numpy()[0] for xv, yv in val_gen])
+        val_loss = np.mean([calc_loss(loss_op, model(Variable(xv)), Variable(yv)).data.cpu().numpy() for xv, yv in val_gen])
         print("val loss", val_loss)
         if best_loss is not None and val_loss >= best_loss:
             epoch_without_impr += 1
