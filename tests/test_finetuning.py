@@ -158,6 +158,120 @@ def test_finetune_last():
 
     assert acc >= min_acc
 
+@attr('slow')
+def test_finetune_chain_thaw_10():
+    """ finetuning PsychExp using 'chain-thaw'.
+    """
+    dataset_path = ROOT_PATH + '/data/PsychExp/raw.pickle'
+    nb_classes = 2
+    # min_acc = 0.68
+    min_acc = .2
+
+    with open(VOCAB_PATH, 'r') as f:
+        vocab = json.load(f)
+
+    data = load_benchmark(dataset_path, vocab)
+    print('Loading model from {}.'.format(PRETRAINED_PATH))
+    model = torchmoji_transfer(nb_classes, PRETRAINED_PATH)
+    print(model)
+    model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
+                          data['batch_size'], method='chain-thaw', nb_epochs=1)
+
+    print("Finetune chain-thaw PsychExp 1 epoch acc: {}".format(acc))
+
+    assert acc >= min_acc
+
+@attr('slow')
+def test_finetune_new_youtube():
+    """ finetuning YouTube using 'new'.
+    """
+    dataset_path = ROOT_PATH + '/data/SS-Youtube/raw.pickle'
+    nb_classes = 2
+    # min_acc = 0.68
+    min_acc = .2
+
+    with open(VOCAB_PATH, 'r') as f:
+        vocab = json.load(f)
+
+    data = load_benchmark(dataset_path, vocab)
+    print('Loading model from {}.'.format(PRETRAINED_PATH))
+    model = torchmoji_transfer(nb_classes, PRETRAINED_PATH)
+    print(model)
+    model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
+                          data['batch_size'], method='new')
+
+    print("Finetune new SS-YouTube acc: {}".format(acc))
+
+    assert acc >= min_acc
+
+@attr('slow')
+def test_finetune_new_twitter():
+    """ finetuning a SS-Twitter model using 'new'.
+    """
+    dataset_path = ROOT_PATH + '/data/SS-Twitter/raw.pickle'
+    nb_classes = 2
+    # min_acc = 0.68
+    min_acc = .2
+
+    with open(VOCAB_PATH, 'r') as f:
+        vocab = json.load(f)
+
+    data = load_benchmark(dataset_path, vocab)
+    print('Loading model from {}.'.format(PRETRAINED_PATH))
+    model = torchmoji_transfer(nb_classes, PRETRAINED_PATH)
+    print(model)
+    model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
+                          data['batch_size'], method='new')
+
+    print("Finetune new SS-Twitter acc: {}".format(acc))
+
+    assert acc >= min_acc
+
+@attr('slow')
+def test_finetune_new_scv1():
+    """ finetuning a SCv1 model using 'new'.
+    """
+    dataset_path = ROOT_PATH + '/data/SCv1/raw.pickle'
+    nb_classes = 2
+    # min_acc = 0.68
+    min_acc = .2
+
+    with open(VOCAB_PATH, 'r') as f:
+        vocab = json.load(f)
+
+    data = load_benchmark(dataset_path, vocab)
+    print('Loading model from {}.'.format(PRETRAINED_PATH))
+    model = torchmoji_transfer(nb_classes, PRETRAINED_PATH)
+    print(model)
+    model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
+                          data['batch_size'], method='new') #metric='weighted_f1')
+
+    print("Finetune new SCv1 acc: {}".format(acc))
+
+    assert acc >= min_acc
+
+@attr('slow')
+def test_finetune_insults():
+    """ finetuning kaggle insults using chain-thaw
+    """
+    DATASET_PATH = '../data/kaggle-insults/raw.pickle'
+    nb_classes = 2
+
+    with open('../model/vocabulary.json', 'r') as f:
+        vocab = json.load(f)
+
+    # Load dataset. Extend the existing vocabulary with up to 10000 tokens from
+    # the training dataset.
+    data = load_benchmark(DATASET_PATH, vocab, extend_with=10000)
+
+    # Set up model and finetune. Note that we have to extend the embedding layer
+    # with the number of tokens added to the vocabulary.
+    model = torchmoji_transfer(nb_classes, PRETRAINED_PATH, extend_embedding=data['added'])
+    print(model)
+    model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
+                        data['batch_size'], method='chain-thaw', nb_epochs=1)
+    print('Acc: {}'.format(acc))
+
 
 def test_score_emoji():
     """ Emoji predictions make sense.

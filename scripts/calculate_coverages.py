@@ -41,7 +41,7 @@ for p in DATASET_PATHS:
         if IS_PYTHON2:
             s = pickle.load(f)
         else:
-            s = pickle.load(f, fix_imports=True)
+            s = pickle.load(f, fix_imports=True, encoding='latin1')
 
     # Decode data
     try:
@@ -78,7 +78,7 @@ for p in DATASET_PATHS:
 
     results.append(coverage_result)
 
-with open(OUTPUT_PATH, 'wb') as csvfile:
+with open(OUTPUT_PATH, 'w') as csvfile:
     writer = csv.writer(csvfile, delimiter='\t', lineterminator='\n')
     writer.writerow(['Dataset', 'Own', 'Last', 'Full'])
     for i, row in enumerate(results):

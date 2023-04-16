@@ -67,7 +67,7 @@ def load_benchmark(path, vocab, extend_with=0):
         if IS_PYTHON2:
             data = pickle.load(dataset)
         else:
-            data = pickle.load(dataset, fix_imports=True)
+            data = pickle.load(dataset, fix_imports=True, encoding='latin1')
 
     # Decode data
     try:
@@ -185,7 +185,8 @@ def find_f1_threshold(model, val_gen, test_gen, average='binary'):
     y_test, y_pred_test = (list(t) for t in zip(*val_out))
 
     for t in thresholds:
-        y_pred_val_ind = (y_pred_val > t)
+        
+        y_pred_val_ind = (y_pred_val.sum() > t)
         f1_val = f1_score(y_val, y_pred_val_ind, average=average)
         f1_scores.append(f1_val)
 

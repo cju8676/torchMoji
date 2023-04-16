@@ -156,13 +156,13 @@ class TorchMoji(nn.Module):
         ih = (param.data for name, param in self.named_parameters() if 'weight_ih' in name)
         hh = (param.data for name, param in self.named_parameters() if 'weight_hh' in name)
         b = (param.data for name, param in self.named_parameters() if 'bias' in name)
-        nn.init.uniform(self.embed.weight.data, a=-0.5, b=0.5)
+        nn.init.uniform_(self.embed.weight.data, a=-0.5, b=0.5)
         for t in ih:
-            nn.init.xavier_uniform(t)
+            nn.init.xavier_uniform_(t)
         for t in hh:
-            nn.init.orthogonal(t)
+            nn.init.orthogonal_(t)
         for t in b:
-            nn.init.constant(t, 0)
+            nn.init.constant_(t, 0)
         if not self.feature_output:
             nn.init.xavier_uniform(self.output_layer[0].weight.data)
 

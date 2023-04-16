@@ -4,13 +4,18 @@
 """
 
 from __future__ import print_function, division, unicode_literals
-import example_helper
+# import example_helper
 import json
 import csv
 import argparse
 
 import numpy as np
 import emoji
+
+import sys
+# Allow us to import the torchmoji directory
+from os.path import dirname, abspath
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from torchmoji.sentence_tokenizer import SentenceTokenizer
 from torchmoji.model_def import torchmoji_emojis

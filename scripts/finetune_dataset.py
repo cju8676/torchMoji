@@ -35,13 +35,15 @@ DATASETS = [
       ]
 
 RESULTS_DIR = 'results'
+# RESULTS_DIR = ''
 
 # 'new' | 'last' | 'full' | 'chain-thaw'
 FINETUNE_METHOD = 'last'
 VERBOSE = 1
 
 nb_tokens = 50000
-nb_epochs = 1000
+# nb_epochs = 1000
+nb_epochs = 1
 epoch_size = 1000
 
 with open(VOCAB_PATH, 'r') as f:
@@ -87,12 +89,12 @@ for rerun_iter in range(5):
                                                data['labels'],
                                                nb_classes, data['batch_size'],
                                                FINETUNE_METHOD,
-                                               verbose=VERBOSE)
+                                               verbose=VERBOSE, nb_epochs=nb_epochs)
         else:
             model, result = finetune(model, data['texts'], data['labels'],
                                      nb_classes, data['batch_size'],
                                      FINETUNE_METHOD, metric='acc',
-                                     verbose=VERBOSE)
+                                     verbose=VERBOSE, nb_epochs=nb_epochs)
 
         # Write results
         if use_f1_score:
