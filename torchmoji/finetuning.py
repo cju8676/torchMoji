@@ -364,13 +364,17 @@ def evaluate_using_acc(model, test_gen):
     accs = []
     for i, data in enumerate(test_gen):
         x, y = data
+        # Y is a row vector, outs is a column vector
+        # transpose Y into a column vector in order to do
+        # accuracy calculation
+        yt = y.reshape(1, -1).t()
         outs = model(x)
         if model.nb_classes > 2:
             pred = torch.max(outs, 1)[1]
-            acc = accuracy_score(y.squeeze().numpy(), pred.squeeze().numpy())
+            acc = accuracy_score(yt.squeeze().numpy(), pred.squeeze().numpy())
         else:
-            pred = (outs >= 0).long()
-            acc = (pred == y).double().sum() / len(pred)
+            pred = (outs >= 0).long()    
+            acc = (pred == yt).double().sum() / len(pred)
         accs.append(acc)
     return np.mean(accs)
 
