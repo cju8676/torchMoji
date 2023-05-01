@@ -27,6 +27,7 @@ from torchmoji.global_variables import (FINETUNING_METHODS,
                                                WEIGHTS_DIR)
 from torchmoji.tokenizer import tokenize
 from torchmoji.sentence_tokenizer import SentenceTokenizer
+import time
 
 try:
     unicode
@@ -497,7 +498,7 @@ def train_by_chain_thaw(model, train_gen, val_gen, loss_op, patience, nb_epochs,
 
 def calc_loss(loss_op, pred, yv):
     if type(loss_op) is nn.CrossEntropyLoss:
-        return loss_op(pred.squeeze(), yv.squeeze())
+        return loss_op(pred.squeeze(), yv.squeeze().float())
     else:
         return loss_op(pred.squeeze(), yv.squeeze().float())
 
@@ -530,6 +531,7 @@ def fit_model(model, loss_op, optim_op, train_gen, val_gen, epochs,
 
     epoch_without_impr = 0
     for epoch in range(epochs):
+        epoch_start = time.time()
         for i, data in enumerate(train_gen):
             X_train, y_train = data
             X_train = Variable(X_train, requires_grad=False)
@@ -544,9 +546,10 @@ def fit_model(model, loss_op, optim_op, train_gen, val_gen, epochs,
 
             acc = evaluate_using_acc(model, [(X_train.data, y_train.data)])
             print("== Epoch", epoch, "step", i, "train loss", loss.data.cpu().numpy(), "train acc", acc)
-
+        epoch_end = time.time()
         model.eval()
         acc = evaluate_using_acc(model, val_gen)
+        print(f"-- epoch time elapsed: {epoch_end - epoch_start}s")
         print("val acc", acc)
 
         val_loss = np.mean([calc_loss(loss_op, model(Variable(xv)), Variable(yv)).data.cpu().numpy() for xv, yv in val_gen])

@@ -15,6 +15,8 @@ from torchmoji.lstm import LSTMHardSigmoid
 from torchmoji.attlayer import Attention
 from torchmoji.global_variables import NB_TOKENS, NB_EMOJI_CLASSES
 
+num_layers = 512
+
 
 def torchmoji_feature_encoding(weight_path, return_attention=False):
     """ Loads the pretrained torchMoji model for extracting features
@@ -60,7 +62,7 @@ def torchmoji_emojis(weight_path, return_attention=False):
 
 
 def torchmoji_transfer(nb_classes, weight_path=None, extend_embedding=0,
-                      embed_dropout_rate=0.1, final_dropout_rate=0.5):
+                      embed_dropout_rate=0.1, final_dropout_rate=0.5, lstm_layer_count=512):
     """ Loads the pretrained torchMoji model for finetuning/transfer learning.
         Does not load weights for the softmax layer.
 
@@ -84,6 +86,8 @@ def torchmoji_transfer(nb_classes, weight_path=None, extend_embedding=0,
     # Returns:
         Model with the given parameters.
     """
+    global num_layers;
+    num_layers = lstm_layer_count
 
     model = TorchMoji(nb_classes=nb_classes,
                      nb_tokens=NB_TOKENS + extend_embedding,
@@ -120,7 +124,10 @@ class TorchMoji(nn.Module):
         super(TorchMoji, self).__init__()
 
         embedding_dim = 256
-        hidden_size = 512
+        # hidden_size = 512
+        global num_layers
+        hidden_size = num_layers
+
         attention_size = 4 * hidden_size + embedding_dim
 
         self.feature_output = feature_output
@@ -137,6 +144,7 @@ class TorchMoji(nn.Module):
         self.add_module('embed_dropout', nn.Dropout2d(embed_dropout_rate))
         self.add_module('lstm_0', LSTMHardSigmoid(embedding_dim, hidden_size, batch_first=True, bidirectional=True))
         self.add_module('lstm_1', LSTMHardSigmoid(hidden_size*2, hidden_size, batch_first=True, bidirectional=True))
+        # self.add_module(f'lstm_{2+1}', LSTMHardSigmoid(hidden_size*2, hidden_size, batch_first=True, bidirectional=True))
         self.add_module('attention_layer', Attention(attention_size=attention_size, return_attention=return_attention))
         if not feature_output:
             self.add_module('final_dropout', nn.Dropout(final_dropout_rate))
@@ -305,7 +313,60 @@ def load_specific_weights(model, weight_path, exclude_names=[], extend_embedding
                       'from {} to {} tokens.'.format(
                         NB_TOKENS, NB_TOKENS + extend_embedding))
         try:
-            model_w.copy_(weight)
+            
+            # print("model size", model_w.size(0), model_w.size(1))
+            # print(model_w)
+            # print("loaded weights size", weight.size(0), weight.size(1))
+            # print(weight)
+            print(model_w.size())
+            print(weight.size())
+
+            
+
+            padded_dim_x = model_w.size(0) - weight.size(0)
+            if len(list(model_w.size())) == 1:
+                new_weight = nn.functional.pad(input=weight, pad=(0, padded_dim_x), mode='constant', value=0)
+                print("padded dim x", padded_dim_x)
+            else :
+                # padded_dim_x = model_w.size(0) - weight.size(0)
+                padded_dim_y = model_w.size(1) - weight.size(1)
+                print("padded dims x and y", padded_dim_x, padded_dim_y)
+                # weight_size = list(weight.size())
+                # print("weight sizes", weight_size)
+                # new_weight = torch.zeros(model_w.size(0), model_w.size(1))
+                # new_weight[int(weight_size[0])-1, int(weight_size[1])-1] = weight
+                new_weight = nn.functional.pad(input=weight, pad=(0, padded_dim_y, 0, padded_dim_x), mode='constant', value=0)
+
+
+            #     if padded_dim_x != 0 and padded_dim_y == 0:
+            #         print("if")
+            #         # pad in x direction
+            #         zero_cat = torch.zeros(padded_dim_x, model_w.size(1))
+            #         new_weight = torch.cat((weight, zero_cat), dim=0)
+            # # print("zero cat", zero_cat)
+            # # print("zero cat size", zero_cat.size(0), zero_cat.size(1))
+            #         # new_weight = torch.cat((weight, zero_cat), dim=0)
+            #     elif padded_dim_y != 0 and padded_dim_x == 0:
+            #         # pad in y direction
+            #         print("elif")
+            #         zero_cat = torch.zeros(model_w.size(0), padded_dim_y)
+            #         new_weight = torch.cat((weight, zero_cat), dim=1)
+            #     else:
+            #         # pad in both the x and y direction
+            #         print("else")
+            #         x_cat = torch.zeros(padded_dim_x, weight.size(1))
+            #         y_cat = torch.zeros(model_w.size(0), padded_dim_y)
+            #         # zero_cat = torch.zeros(padded_dim_x, padded_dim_y)
+            #         weight_plus_x = torch.cat((weight, x_cat), dim=0)
+            #         new_weight = torch.cat((weight_plus_x, y_cat), dim=1)
+
+            # print("zero cat", zero_cat)
+            # print("zero cat size", zero_cat.size(0), zero_cat.size(1))
+                # new_weight = torch.cat((weight, zero_cat), dim=0)
+
+            # print("new weight", new_weight)
+            # print("new weight size", new_weight.size(0), new_weight.size(1))
+            model_w.copy_(new_weight)
         except:
             print('While copying the weigths named {}, whose dimensions in the model are'
                   ' {} and whose dimensions in the saved file are {}, ...'.format(
