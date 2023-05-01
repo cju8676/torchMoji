@@ -45,6 +45,7 @@ extend_with = 10000
 RESULTS_DIR = 'results'
 # RESULTS_DIR = ''
 # 'new' | 'last' | 'full' | 'chain-thaw'
+# for the experiment we will be using chain-thaw for all
 FINETUNE_METHOD = 'chain-thaw'
 VERBOSE = 1
 nb_tokens = 50000
@@ -52,6 +53,8 @@ nb_tokens = 50000
 nb_epochs = 10
 epoch_size = 1000
 
+# layer counts for experiment: 128, 256, 512, 1024
+# USAGE: python cs635experiment.py [layer_count] > [output.txt]
 layer_count = int(sys.argv[1])
 print("Layer count input: ", layer_count)
 
@@ -64,10 +67,6 @@ f = open('{}/cs635_{}_{}_runs_{}_results.txt'.
                 "w")
 
 f.write("Layer count input: {}".format(layer_count))
-# Grid search 2 through 5 layers for now
-# for loop = sequential layers run on 1 server ~~ 3-4 hours for 5 iterations
-# for layer_count in range(2, 6):
-
 
 layer_start_time = time.time()
 print(f"Running with {layer_count} LSTM layers...")

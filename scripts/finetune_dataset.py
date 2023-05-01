@@ -38,12 +38,12 @@ RESULTS_DIR = 'results'
 # RESULTS_DIR = ''
 
 # 'new' | 'last' | 'full' | 'chain-thaw'
-FINETUNE_METHOD = 'last'
+FINETUNE_METHOD = 'chain-thaw'
 VERBOSE = 1
 
 nb_tokens = 50000
-# nb_epochs = 1000
-nb_epochs = 1
+nb_epochs = 1000
+# nb_epochs = 1
 epoch_size = 1000
 
 with open(VOCAB_PATH, 'r') as f:
@@ -105,7 +105,7 @@ for rerun_iter in range(5):
                 f.write("F1: {}\n".format(result))
         else:
             print('Test accuracy (dset = {}): {}'.format(dset, result))
-            with open('{}/{}_{}_{}_results.txt'.
+            with open('{}/{}_{}_{}_results428.txt'.
                       format(RESULTS_DIR, dset, FINETUNE_METHOD, rerun_iter),
                       "w") as f:
                 f.write("Acc: {}\n".format(result))
