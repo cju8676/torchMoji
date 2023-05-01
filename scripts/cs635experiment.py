@@ -33,8 +33,9 @@ def roundup(x):
 #          path_to_dataset,
 #          nb_classes)
 DATASETS = [
+    ('SE0714', '../data/SE0714/raw.pickle', 3, True),
     #  ('SS-Youtube', '../data/SS-Youtube/raw.pickle', 2),
-    ('SCv1', '../data/SCv1/raw.pickle', 2, True),
+    # ('SCv1', '../data/SCv1/raw.pickle', 2, True),
       ]
 p = DATASETS[0]
 dset = p[0]

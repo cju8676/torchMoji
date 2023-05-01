@@ -371,8 +371,11 @@ def evaluate_using_acc(model, test_gen):
         yt = y.reshape(1, -1).t()
         outs = model(x)
         if model.nb_classes > 2:
-            pred = torch.max(outs, 1)[1]
-            acc = accuracy_score(yt.squeeze().numpy(), pred.squeeze().numpy())
+            y_pred = torch.max(outs, 1)[1].squeeze()
+            y_true = torch.max(y, 1)[1].squeeze()
+            # print("y", )
+            # print("PRED", pred.squeeze())
+            acc = accuracy_score(y_true.numpy(), y_pred.numpy())
         else:
             pred = (outs >= 0).long()    
             acc = (pred == yt).double().sum() / len(pred)
