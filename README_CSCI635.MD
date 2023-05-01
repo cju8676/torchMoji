@@ -16,6 +16,7 @@ It is preferable to run on one of the GPU compute nodes for the best performance
 ```bash
 pip install -e .
 ```
+- Ensure you have the original model in model/ directory, if not, it can be downloaded [here](https://www.dropbox.com/s/q8lax9ary32c7t9/pytorch_model.bin?dl=0) as mentioned in the original README
 
 ## Group 9's Changes
 The majority of code is left as is, but files and locations where our code is changed to benefit our new experiment will contain file headers and comments that link to the specific lines that were modified.
