@@ -313,59 +313,13 @@ def load_specific_weights(model, weight_path, exclude_names=[], extend_embedding
                       'from {} to {} tokens.'.format(
                         NB_TOKENS, NB_TOKENS + extend_embedding))
         try:
-            
-            # print("model size", model_w.size(0), model_w.size(1))
-            # print(model_w)
-            # print("loaded weights size", weight.size(0), weight.size(1))
-            # print(weight)
-            print(model_w.size())
-            print(weight.size())
-
-            
-
             padded_dim_x = model_w.size(0) - weight.size(0)
             if len(list(model_w.size())) == 1:
                 new_weight = nn.functional.pad(input=weight, pad=(0, padded_dim_x), mode='constant', value=0)
-                print("padded dim x", padded_dim_x)
             else :
-                # padded_dim_x = model_w.size(0) - weight.size(0)
                 padded_dim_y = model_w.size(1) - weight.size(1)
-                print("padded dims x and y", padded_dim_x, padded_dim_y)
-                # weight_size = list(weight.size())
-                # print("weight sizes", weight_size)
-                # new_weight = torch.zeros(model_w.size(0), model_w.size(1))
-                # new_weight[int(weight_size[0])-1, int(weight_size[1])-1] = weight
                 new_weight = nn.functional.pad(input=weight, pad=(0, padded_dim_y, 0, padded_dim_x), mode='constant', value=0)
 
-
-            #     if padded_dim_x != 0 and padded_dim_y == 0:
-            #         print("if")
-            #         # pad in x direction
-            #         zero_cat = torch.zeros(padded_dim_x, model_w.size(1))
-            #         new_weight = torch.cat((weight, zero_cat), dim=0)
-            # # print("zero cat", zero_cat)
-            # # print("zero cat size", zero_cat.size(0), zero_cat.size(1))
-            #         # new_weight = torch.cat((weight, zero_cat), dim=0)
-            #     elif padded_dim_y != 0 and padded_dim_x == 0:
-            #         # pad in y direction
-            #         print("elif")
-            #         zero_cat = torch.zeros(model_w.size(0), padded_dim_y)
-            #         new_weight = torch.cat((weight, zero_cat), dim=1)
-            #     else:
-            #         # pad in both the x and y direction
-            #         print("else")
-            #         x_cat = torch.zeros(padded_dim_x, weight.size(1))
-            #         y_cat = torch.zeros(model_w.size(0), padded_dim_y)
-            #         # zero_cat = torch.zeros(padded_dim_x, padded_dim_y)
-            #         weight_plus_x = torch.cat((weight, x_cat), dim=0)
-            #         new_weight = torch.cat((weight_plus_x, y_cat), dim=1)
-
-            # print("zero cat", zero_cat)
-            # print("zero cat size", zero_cat.size(0), zero_cat.size(1))
-                # new_weight = torch.cat((weight, zero_cat), dim=0)
-
-            # print("new weight", new_weight)
-            # print("new weight size", new_weight.size(0), new_weight.size(1))
             model_w.copy_(new_weight)
         except:
             print('While copying the weigths named {}, whose dimensions in the model are'
