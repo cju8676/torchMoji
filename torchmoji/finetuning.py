@@ -1,6 +1,13 @@
-# -*- coding: utf-8 -*-
-""" Finetuning functions for doing transfer learning to new datasets.
 """
+    CS635 Final Project - Group 9
+    Contributed: Corey Urbanke 
+    Modifications: 
+        - transpose ground truths to fix accuracy calculation
+        - output total time per epoch during a run
+
+    Finetuning functions for doing transfer learning to new datasets.
+"""
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 
 import uuid
@@ -365,6 +372,9 @@ def evaluate_using_acc(model, test_gen):
     accs = []
     for i, data in enumerate(test_gen):
         x, y = data
+        ########################
+        # -- Modified -- CS635 #
+        ########################
         # Y is a row vector, outs is a column vector
         # transpose Y into a column vector in order to do
         # accuracy calculation
@@ -534,6 +544,10 @@ def fit_model(model, loss_op, optim_op, train_gen, val_gen, epochs,
 
     epoch_without_impr = 0
     for epoch in range(epochs):
+        ########################
+        # -- Modified -- CS635 #
+        ########################
+        # grab start and end times for each epoch
         epoch_start = time.time()
         for i, data in enumerate(train_gen):
             X_train, y_train = data

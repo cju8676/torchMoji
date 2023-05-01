@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
-""" Model definition functions and weight loading.
+""" 
+    CS635 Final Project - Group 9
+    Contributions: Corey Urbanke
+    Modifications: 
+        - num_layers variable to control hidden layer count
+        - padded/reshaped input weights to match hidden layer count
+        for experiment
+        - other small fixes to get code working
+
+    Model definition functions and weight loading.
 """
 
 from __future__ import print_function, division, unicode_literals
@@ -15,6 +24,10 @@ from torchmoji.lstm import LSTMHardSigmoid
 from torchmoji.attlayer import Attention
 from torchmoji.global_variables import NB_TOKENS, NB_EMOJI_CLASSES
 
+########################
+# -- Modified -- CS635 #
+########################
+# variable needed to change hidden layer count
 num_layers = 512
 
 
@@ -86,6 +99,11 @@ def torchmoji_transfer(nb_classes, weight_path=None, extend_embedding=0,
     # Returns:
         Model with the given parameters.
     """
+
+    ########################
+    # -- Modified -- CS635 #
+    ########################
+    # added lstm_layer_count argument
     global num_layers;
     num_layers = lstm_layer_count
 
@@ -124,6 +142,10 @@ class TorchMoji(nn.Module):
         super(TorchMoji, self).__init__()
 
         embedding_dim = 256
+        ########################
+        # -- Modified -- CS635 #
+        ########################
+        # added lstm_layer_count argument
         # hidden_size = 512
         global num_layers
         hidden_size = num_layers
@@ -144,7 +166,6 @@ class TorchMoji(nn.Module):
         self.add_module('embed_dropout', nn.Dropout2d(embed_dropout_rate))
         self.add_module('lstm_0', LSTMHardSigmoid(embedding_dim, hidden_size, batch_first=True, bidirectional=True))
         self.add_module('lstm_1', LSTMHardSigmoid(hidden_size*2, hidden_size, batch_first=True, bidirectional=True))
-        # self.add_module(f'lstm_{2+1}', LSTMHardSigmoid(hidden_size*2, hidden_size, batch_first=True, bidirectional=True))
         self.add_module('attention_layer', Attention(attention_size=attention_size, return_attention=return_attention))
         if not feature_output:
             self.add_module('final_dropout', nn.Dropout(final_dropout_rate))
@@ -313,6 +334,10 @@ def load_specific_weights(model, weight_path, exclude_names=[], extend_embedding
                       'from {} to {} tokens.'.format(
                         NB_TOKENS, NB_TOKENS + extend_embedding))
         try:
+            ########################
+            # -- Modified -- CS635 #
+            ########################
+            # reshape input weights to match changed hidden layer size for experiment
             padded_dim_x = model_w.size(0) - weight.size(0)
             if len(list(model_w.size())) == 1:
                 new_weight = nn.functional.pad(input=weight, pad=(0, padded_dim_x), mode='constant', value=0)

@@ -6,8 +6,9 @@
     just like the original paper
     Assess accuracy and time taken foreach
     Output results
-
     @author Corey Urbanke
+
+    Modifications: (entire file added)
 
 """
 from __future__ import print_function
@@ -68,7 +69,11 @@ f = open('{}/cs635_{}_{}_runs_{}_results.txt'.
                 "w")
 
 f.write("Layer count input: {}".format(layer_count))
-
+# to change this to run the entire experiment at one time, 
+# we can add for loop and tab over the entire below code:
+# note: takes several hours
+# layer_counts = [128, 256, 512, 1024]
+# for layer_count in layer_counts:
 layer_start_time = time.time()
 print(f"Running with {layer_count} LSTM layers...")
 f.write(f"Running with {layer_count} LSTM layers...")

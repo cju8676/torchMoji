@@ -11,7 +11,7 @@ It is preferable to run on one of the GPU compute nodes for the best performance
 ## Overview
 - Framework: PyTorch
 - GPU: Increases performance considerably, but code will just use CPU if GPU is unavailable
-- Setup on CS server uses a Miniconda environment with utilizing [torchmoji_env](torchmoji_env) YML file to create and run a suitable environment for the code
+- Setup on CS server uses a Miniconda environment with utilizing [torchmoji_env.yml](torchmoji_env.yml) YML file to create and run a suitable environment for the code
 - As an alternative, the [setup.py](setup.py) file could be run to create the env using 
 ```bash
 pip install -e .
@@ -33,6 +33,9 @@ Search for these specific code comments:
 # -- Modified -- CS635 #
 ########################
 ```
+Note: small fixes to get the code to run are not headered by a --- Modified --- banner, only significant
+experiment changes...
+For full changes please see [GitHub](https://github.com/huggingface/torchMoji/compare/master...cju8676:torchMoji:master)
 
 ## Running Code
 As mentioned, please see CSServerSetup.MD for a full installation and run through of running code.

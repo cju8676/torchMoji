@@ -1,3 +1,12 @@
+"""
+    CS635 Final Project - Group 9
+    Contributed: Corey Urbanke
+    Desc:
+    preliminary reproducible results and unit tests for original code base
+    done for the Project Proposal presentation
+
+    Modifications: (entire file added)
+"""
 from __future__ import absolute_import, print_function, division, unicode_literals
 
 import test_helper
