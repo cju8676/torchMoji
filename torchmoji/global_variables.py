@@ -20,7 +20,8 @@ ROOT_PATH = dirname(dirname(abspath(__file__)))
 VOCAB_PATH = '{}/model/vocabulary.json'.format(ROOT_PATH)
 PRETRAINED_PATH = '{}/model/pytorch_model.bin'.format(ROOT_PATH)
 
-WEIGHTS_DIR = tempfile.mkdtemp()
+# WEIGHTS_DIR = tempfile.mkdtemp()
+WEIGHTS_DIR = '{}/checkpoints'.format(ROOT_PATH)
 
 NB_TOKENS = 50000
 NB_EMOJI_CLASSES = 64

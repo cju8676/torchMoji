@@ -33,9 +33,9 @@ def roundup(x):
 #          path_to_dataset,
 #          nb_classes)
 DATASETS = [
-    ('SE0714', '../data/SE0714/raw.pickle', 3, True),
+    # ('SE0714', '../data/SE0714/raw.pickle', 3, True),
     #  ('SS-Youtube', '../data/SS-Youtube/raw.pickle', 2),
-    # ('SCv1', '../data/SCv1/raw.pickle', 2, True),
+    ('SCv1', '../data/SCv1/raw.pickle', 2, True),
       ]
 p = DATASETS[0]
 dset = p[0]
@@ -51,7 +51,7 @@ FINETUNE_METHOD = 'chain-thaw'
 VERBOSE = 1
 nb_tokens = 50000
 # nb_epochs = 1000
-nb_epochs = 10
+nb_epochs = 5
 epoch_size = 1000
 
 # layer counts for experiment: 128, 256, 512, 1024
@@ -89,7 +89,6 @@ for rerun_iter in range(5):
                 nb_classes,
                 weight_path,
                 extend_embedding=data['added'], lstm_layer_count=layer_count)
-    hidden_size = 512
     
     print(model)
 
